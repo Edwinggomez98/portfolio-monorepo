@@ -1,0 +1,30 @@
+{
+  "name": "portfolio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo con instancias separadas: frontend (Angular) y backend (NestJS)",
+  "scripts": {
+    "install:frontend": "npm install --prefix ./frontend",
+    "install:backend": "npm install --prefix ./backend",
+    "install:all": "npm install && npm run install:frontend && npm run install:backend",
+    "dev": "concurrently -n front,back -c cyan,magenta \"npm run frontend\" \"npm run backend\"",
+    "dev:all": "npm run db:up && npm run dev",
+    "start": "npm run dev:all",
+    "frontend": "npm run start --prefix ./frontend",
+    "backend": "npm run start:dev --prefix ./backend",
+    "build:frontend": "npm run build --prefix ./frontend",
+    "build:backend": "npm run build --prefix ./backend",
+    "build:all": "npm run build:frontend && npm run build:backend",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres",
+    "db:reset": "docker compose down -v && docker compose up -d"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
