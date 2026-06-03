@@ -28,18 +28,18 @@ import { QuoteSummaryComponent } from './components/quote-summary/quote-summary.
       <div class="bg-white dark:bg-darkbg-card border-b border-gray-100 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div class="flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500 mb-3">
-            <a routerLink="/" class="hover:text-primary dark:hover:text-accent transition-colors">Inicio</a>
+            <a routerLink="/" class="hover:text-primary dark:hover:text-accent transition-colors">Home</a>
             <span>/</span>
-            <span class="text-gray-600 dark:text-gray-300">Cotizador</span>
+            <span class="text-gray-600 dark:text-gray-300">Quote Generator</span>
           </div>
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">
-                Cotizador de Servicios
-              </h1>
-              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 max-w-xl">
-                Genera cotizaciones profesionales en segundos y descárgalas en PDF.
-                Demo de <span class="text-purple-500 font-semibold">NgRx Store</span> con Angular 19.
+              Quote Generator
+            </h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 max-w-xl">
+              Generate professional quotes in seconds and download them as PDF.
+              <span class="text-purple-500 font-semibold">NgRx Store</span> demo with Angular 19.
               </p>
             </div>
             <div class="flex items-center gap-2">

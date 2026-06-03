@@ -18,7 +18,7 @@ export interface SkillCategory {
 export class SkillsComponent {
   readonly categories: SkillCategory[] = [
     {
-      title: 'Desarrollo Core',
+      title: 'Core Development',
       icon: '💻',
       color: 'bg-blue-50 border-blue-200',
       darkColor: 'dark:bg-blue-900/10 dark:border-blue-800',
@@ -33,7 +33,7 @@ export class SkillsComponent {
       ],
     },
     {
-      title: 'Mobile & Dispositivos',
+      title: 'Mobile & Devices',
       icon: '📱',
       color: 'bg-emerald-50 border-emerald-200',
       darkColor: 'dark:bg-emerald-900/10 dark:border-emerald-800',
@@ -45,20 +45,20 @@ export class SkillsComponent {
       ],
     },
     {
-      title: 'Software & Arquitectura',
+      title: 'Software & Architecture',
       icon: '🏗️',
       color: 'bg-purple-50 border-purple-200',
       darkColor: 'dark:bg-purple-900/10 dark:border-purple-800',
       skills: [
         { name: 'Clean Architecture', level: 80 },
-        { name: 'Microservicios', level: 78 },
+        { name: 'Microservices', level: 78 },
         { name: 'CI/CD (GitHub Actions)', level: 75 },
         { name: 'Docker / Compose', level: 70 },
         { name: 'Web3 / Ethers.js', level: 68 },
       ],
     },
     {
-      title: 'Hardware & Sistemas',
+      title: 'Hardware & Systems',
       icon: '⚙️',
       color: 'bg-orange-50 border-orange-200',
       darkColor: 'dark:bg-orange-900/10 dark:border-orange-800',
@@ -76,10 +76,10 @@ export class SkillsComponent {
   }));
 
   getLevelLabel(level: number): string {
-    if (level >= 90) return 'Experto';
-    if (level >= 75) return 'Avanzado';
-    if (level >= 60) return 'Intermedio';
-    return 'Básico';
+    if (level >= 90) return 'Expert';
+    if (level >= 75) return 'Advanced';
+    if (level >= 60) return 'Intermediate';
+    return 'Beginner';
   }
 
   getLevelColor(level: number): string {

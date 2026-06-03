@@ -19,24 +19,24 @@ export interface EducationItem {
 export class EducationComponent {
   readonly educations: EducationItem[] = [
     {
-      degree: 'Ingeniería en Informática',
+      degree: 'Computer Engineering',
       institution: 'Instituto Universitario de Tecnología Agroindustrial Región los Andes (IUT)',
       year: '2020',
       icon: '🎓',
-      description: 'Formación integral en sistemas de información, programación, redes, bases de datos y arquitectura de software.',
-      highlight: 'TSU + Ingeniería',
+      description: 'Comprehensive training in information systems, programming, networking, databases and software architecture.',
+      highlight: 'TSU + Engineering',
     },
     {
-      degree: 'Bachiller en Ciencias',
-      institution: 'Unidad Educativa Privada',
+      degree: 'High School Diploma — Sciences',
+      institution: 'Private Educational Institution',
       year: '2015',
       icon: '🏫',
-      description: 'Bachillerato con mención en Ciencias, base matemática y lógica que refuerza el pensamiento analítico.',
+      description: 'Science track with a strong mathematical and logical foundation that reinforces analytical thinking.',
     },
   ];
 
   readonly certifications = [
-    { name: 'Angular — Desarrollo de Aplicaciones', provider: 'Udemy', year: '2022', icon: '📜' },
+    { name: 'Angular — Application Development', provider: 'Udemy', year: '2022', icon: '📜' },
     { name: 'Docker & Kubernetes Essentials', provider: 'Platzi', year: '2023', icon: '📜' },
     { name: 'AWS Cloud Practitioner Essentials', provider: 'AWS Training', year: '2023', icon: '📜' },
     { name: 'Web3 & Blockchain Fundamentals', provider: 'Coursera', year: '2022', icon: '📜' },

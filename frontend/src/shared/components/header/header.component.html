@@ -22,13 +22,13 @@
 
     <!-- Navegación desktop -->
     <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-      <a href="#experience" class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Experiencia</a>
-      <a href="#projects"   class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Proyectos</a>
-      <a href="#skills"     class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Habilidades</a>
-      <a href="#education"  class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Educación</a>
-      <a href="#contact"    class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Contacto</a>
+      <a href="#experience" class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Experience</a>
+      <a href="#projects"   class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Projects</a>
+      <a href="#skills"     class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Skills</a>
+      <a href="#education"  class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Education</a>
+      <a href="#contact"    class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Contact</a>
       <!-- Demo cotizador -->
-      <a routerLink="/cotizador"
+      <!-- <a routerLink="/cotizador"
          class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold
                 bg-primary/10 text-primary border border-primary/20
                 dark:bg-crimson/10 dark:text-crimson dark:border-crimson/20
@@ -41,7 +41,7 @@
         Cotizador
         <span class="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
         <span class="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full bg-green-500"></span>
-      </a>
+      </a> -->
     </nav>
 
     <!-- Controles lado derecho -->
@@ -53,7 +53,7 @@
         role="switch"
         (click)="theme.toggle()"
         [attr.aria-checked]="theme.isDark()"
-        [attr.aria-label]="theme.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+        [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
         class="group relative inline-flex h-9 w-16 shrink-0 cursor-pointer items-center
                rounded-full border-2 p-1
                transition-all duration-300 ease-in-out
@@ -122,7 +122,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
         </svg>
-        <span class="hidden sm:inline">Descargar CV</span>
+        <span class="hidden sm:inline">Download CV</span>
         <span class="sm:hidden">CV</span>
       </button>
     </div>

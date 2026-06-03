@@ -44,7 +44,7 @@ export class QuoteSummaryComponent {
   }
 
   reset(): void {
-    if (confirm('¿Resetear la cotización? Se perderán todos los datos.')) {
+    if (confirm('Reset the quote? All data will be lost.')) {
       this.store.dispatch(QuoteActions.resetQuote());
     }
   }

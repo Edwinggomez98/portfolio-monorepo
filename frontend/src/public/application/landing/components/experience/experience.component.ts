@@ -30,27 +30,27 @@ export class ExperienceComponent {
       type: 'fullstack',
       projects: [
         {
-          name: 'Plataforma Inmobiliaria',
+          name: 'Real Estate Platform',
           description:
-            'Desarrollo de plataforma web para gestión de propiedades, integración con pasarelas de pago y módulos de reportes avanzados.',
+            'Web platform for property management, payment gateway integration and advanced reporting modules.',
           tags: ['Angular', 'Node.js', 'PostgreSQL', 'Docker'],
         },
         {
-          name: 'Middleware ERP',
+          name: 'ERP Middleware',
           description:
-            'Arquitectura de middleware para sincronización bidireccional entre sistemas ERP legacy y nuevas APIs REST.',
+            'Middleware architecture for bidirectional data synchronization between legacy ERP systems and new REST APIs.',
           tags: ['PHP/Laravel', 'RabbitMQ', 'MySQL', 'Redis'],
         },
         {
-          name: 'Plataforma FinTech',
+          name: 'FinTech Platform',
           description:
-            'Aplicación Fintech para gestión de carteras de inversión, visualización de datos financieros en tiempo real.',
-          tags: ['Angular', 'NestJS', 'NestJS', 'Docker'],
+            'Fintech application for investment portfolio management with real-time financial data visualization.',
+          tags: ['Angular', 'NestJS', 'Docker'],
         },
         {
-          name: 'Exchange de Divisas',
+          name: 'Currency Exchange',
           description:
-            'Plataforma de intercambio de divisas con módulo de tasas en tiempo real, KYC/AML y panel administrativo.',
+            'Currency exchange platform with real-time rate module, KYC/AML compliance and admin dashboard.',
           tags: ['Angular', 'NestJS', 'TypeORM', 'AWS'],
         },
       ],
@@ -62,15 +62,15 @@ export class ExperienceComponent {
       type: 'frontend',
       projects: [
         {
-          name: 'Integraciones Zendesk',
+          name: 'Zendesk Integrations',
           description:
-            'Desarrollo de apps embebidas en Zendesk usando su SDK, automatización de flujos de soporte y dashboards de agentes.',
+            'Embedded apps built on the Zendesk SDK, support workflow automation and agent performance dashboards.',
           tags: ['JavaScript', 'Zendesk SDK', 'REST APIs', 'CSS3'],
         },
         {
-          name: 'Plataforma Web3',
+          name: 'Web3 Platform',
           description:
-            'Frontend para plataforma descentralizada con integración a wallets (MetaMask), smart contracts y visualización de transacciones.',
+            'Decentralized frontend with wallet integration (MetaMask), smart contract interaction and on-chain transaction visualisation.',
           tags: ['Vue.js', 'Web3.js', 'Ethers.js', 'TailwindCSS'],
         },
       ],
@@ -86,6 +86,6 @@ export class ExperienceComponent {
   readonly typeLabels: Record<string, string> = {
     fullstack: 'Full Stack',
     frontend:  'Frontend',
-    infra:     'Infraestructura',
+    infra:     'Infrastructure',
   };
 }

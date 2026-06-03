@@ -14,7 +14,7 @@
           </span>
           <p class="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
             Full Stack Developer & DevOps enthusiast.<br>
-            Construyendo soluciones digitales desde Venezuela para el mundo.
+            Building digital solutions from Venezuela for the world.
           </p>
         </div>
 
@@ -48,7 +48,7 @@
 
           <!-- Email -->
           <a href="mailto:Edwinggomez98@gmail.com"
-             title="Enviar email"
+             title="Send email"
              class="w-9 h-9 rounded-full flex items-center justify-center
                     bg-gray-200 dark:bg-darkbg-surface
                     text-gray-600 dark:text-gray-300
@@ -83,19 +83,19 @@
 
       <!-- Columna central: Nav rápida -->
       <div class="flex flex-col gap-3">
-        <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Navegación</h3>
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Navigation</h3>
         <nav class="flex flex-col gap-2">
-          <a href="#hero"       class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Inicio</a>
-          <a href="#experience" class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Experiencia</a>
-          <a href="#projects"   class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Proyectos</a>
-          <a href="#skills"     class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Habilidades</a>
-          <a href="#education"  class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Educación</a>
+          <a href="#hero"       class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Home</a>
+          <a href="#experience" class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Experience</a>
+          <a href="#projects"   class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Projects</a>
+          <a href="#skills"     class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Skills</a>
+          <a href="#education"  class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-accent transition-colors">Education</a>
         </nav>
       </div>
 
       <!-- Columna derecha: Formulario de contacto -->
       <div>
-        <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Envíame un mensaje</h3>
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Send me a message</h3>
 
         @if (submitted) {
           <div class="flex flex-col items-center justify-center py-6 gap-3 text-center">
@@ -104,10 +104,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
-            <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">¡Mensaje enviado! Te respondo pronto.</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Message sent! I'll get back to you soon.</p>
             <button (click)="submitted = false"
                     class="text-xs text-primary dark:text-accent hover:underline">
-              Enviar otro
+              Send another
             </button>
           </div>
         } @else {
@@ -117,7 +117,7 @@
               <input
                 type="text"
                 formControlName="name"
-                placeholder="Tu nombre"
+                placeholder="Your name"
                 class="w-full text-sm rounded-lg px-3 py-2
                        bg-white dark:bg-darkbg-surface
                        border border-gray-200 dark:border-gray-600
@@ -126,7 +126,7 @@
                        focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent
                        transition-colors duration-200"/>
               @if (hasError('name', 'required')) {
-                <p class="text-xs text-red-500 mt-1">El nombre es requerido.</p>
+                <p class="text-xs text-red-500 mt-1">Name is required.</p>
               }
             </div>
 
@@ -144,7 +144,7 @@
                        focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent
                        transition-colors duration-200"/>
               @if (hasError('email', 'email')) {
-                <p class="text-xs text-red-500 mt-1">Email inválido.</p>
+                <p class="text-xs text-red-500 mt-1">Invalid email.</p>
               }
             </div>
 
@@ -153,7 +153,7 @@
               <textarea
                 formControlName="message"
                 rows="3"
-                placeholder="Tu mensaje..."
+                placeholder="Your message..."
                 class="w-full text-sm rounded-lg px-3 py-2 resize-none
                        bg-white dark:bg-darkbg-surface
                        border border-gray-200 dark:border-gray-600
@@ -162,7 +162,7 @@
                        focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent
                        transition-colors duration-200"></textarea>
               @if (hasError('message', 'required')) {
-                <p class="text-xs text-red-500 mt-1">El mensaje es requerido.</p>
+                <p class="text-xs text-red-500 mt-1">Message is required.</p>
               }
             </div>
 
@@ -175,9 +175,9 @@
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                Enviando...
+                Sending...
               } @else {
-                Enviar mensaje
+                Send message
               }
             </button>
           </form>
@@ -188,10 +188,10 @@
     <!-- Línea inferior -->
     <div class="border-t border-gray-200 dark:border-gray-700 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
       <p class="text-xs text-gray-400 dark:text-gray-500">
-        &copy; {{ currentYear }} Edwing Gomez. Todos los derechos reservados.
+        &copy; {{ currentYear }} Edwing Gomez. All rights reserved.
       </p>
       <p class="text-xs text-gray-400 dark:text-gray-500">
-        Construido con <span class="text-primary dark:text-accent font-medium">Angular 19</span> &amp; <span class="text-accent dark:text-crimson font-medium">TailwindCSS</span>
+        Built with <span class="text-primary dark:text-accent font-medium">Angular 19</span> &amp; <span class="text-accent dark:text-crimson font-medium">TailwindCSS</span>
       </p>
     </div>
   </div>

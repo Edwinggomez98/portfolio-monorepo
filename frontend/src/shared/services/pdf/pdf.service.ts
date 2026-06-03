@@ -49,20 +49,20 @@ export class PdfService {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(26);
     doc.setTextColor(...white);
-    doc.text('COTIZACIÓN', W - pad, 20, { align: 'right' });
+    doc.text('QUOTE', W - pad, 20, { align: 'right' });
 
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.text(`N°  ${quote.number}`, W - pad, 28, { align: 'right' });
-    doc.text(`Fecha: ${fmtDate(quote.date)}`, W - pad, 33, { align: 'right' });
+    doc.text(`Date: ${fmtDate(quote.date)}`, W - pad, 33, { align: 'right' });
 
     // ── Info cliente + vigencia ───────────────────────────────────────────────
     let y = 48;
     doc.setTextColor(...dark);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.text('DATOS DEL CLIENTE', pad, y);
-    doc.text('VIGENCIA', col2 + 5, y);
+    doc.text('CLIENT DETAILS', pad, y);
+    doc.text('VALIDITY', col2 + 5, y);
 
     y += 5;
     doc.setFont('helvetica', 'normal');
@@ -70,17 +70,17 @@ export class PdfService {
     doc.setTextColor(...gray);
 
     const clientLines = [
-      quote.client.name    ? `Nombre: ${quote.client.name}`    : '',
-      quote.client.company ? `Empresa: ${quote.client.company}` : '',
-      quote.client.email   ? `Email: ${quote.client.email}`    : '',
+      quote.client.name    ? `Name: ${quote.client.name}`    : '',
+      quote.client.company ? `Phone: ${quote.client.company}` : '',
+      quote.client.email   ? `Email: ${quote.client.email}`  : '',
     ].filter(Boolean);
 
     clientLines.forEach(line => { doc.text(line, pad, y); y += 5; });
 
     doc.setTextColor(...gray);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Válida hasta: ${fmtDate(quote.validUntil)}`, col2 + 5, 53);
-    doc.text(`Moneda: ${quote.currency}`, col2 + 5, 58);
+    doc.text(`Valid until: ${fmtDate(quote.validUntil)}`, col2 + 5, 53);
+    doc.text(`Currency: ${quote.currency}`, col2 + 5, 58);
 
     // ── Tabla de ítems ────────────────────────────────────────────────────────
     y = Math.max(y, 72) + 4;
@@ -101,7 +101,7 @@ export class PdfService {
     };
 
     doc.text('#',          cols.idx,   y + 5.5);
-    doc.text('Descripción', cols.desc,  y + 5.5);
+    doc.text('Description', cols.desc,  y + 5.5);
     doc.text('Cant.',       cols.qty,   y + 5.5);
     doc.text('P. Unit.',    cols.price, y + 5.5);
     doc.text('Subtotal',    cols.sub,   y + 5.5);
@@ -183,10 +183,10 @@ export class PdfService {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7);
     doc.setTextColor(...gray);
-    doc.text('Este documento es una cotización y no constituye una factura legal.', W / 2, footerY, { align: 'center' });
+    doc.text('This document is a quote and does not constitute a legal invoice.', W / 2, footerY, { align: 'center' });
     doc.text(`Generado el ${fmtDate(quote.date)} · edwinggomez.vercel.app`, W / 2, footerY + 5, { align: 'center' });
 
     // ── Guardar ───────────────────────────────────────────────────────────────
-    doc.save(`Cotizacion-${quote.number}.pdf`);
+    doc.save(`Quote-${quote.number}.pdf`);
   }
 }

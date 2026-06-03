@@ -9,7 +9,7 @@
         </svg>
       </div>
       <div>
-        <h3 class="font-bold text-gray-900 dark:text-white">Datos del Cliente</h3>
+        <h3 class="font-bold text-gray-900 dark:text-white">Client Details</h3>
         @if (quoteNumber$ | async; as num) {
           <p class="text-xs text-gray-400 dark:text-gray-500 font-mono">{{ num }} · {{ quoteDate$ | async }}</p>
         }
@@ -28,24 +28,24 @@
                [class.ring-2]="hasClientError('email', 'email')"
                [class.ring-red-400]="hasClientError('email', 'email')" />
         @if (hasClientError('email', 'email')) {
-          <p class="mt-1 text-xs text-red-500">Email inválido.</p>
+          <p class="mt-1 text-xs text-red-500">Invalid email.</p>
         }
         @if (hasClientError('email', 'required')) {
-          <p class="mt-1 text-xs text-red-500">El email es requerido.</p>
+          <p class="mt-1 text-xs text-red-500">Email is required.</p>
         }
       </div>
 
       <!-- Nombre -->
       <div class="sm:col-span-1">
-        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
-        <input formControlName="name" type="text" placeholder="Juan Pérez"
+        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+        <input formControlName="name" type="text" placeholder="John Doe"
                class="input-field" />
       </div>
 
       <!-- Teléfono -->
       <div class="sm:col-span-1">
-        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Teléfono</label>
-        <input formControlName="phone" type="tel" placeholder="+58 424-0000000"
+        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
+        <input formControlName="phone" type="tel" placeholder="+1 555-000-0000"
                class="input-field" />
       </div>
 
@@ -62,14 +62,14 @@
           </svg>
         </div>
         <div>
-          <h3 class="font-bold text-gray-900 dark:text-white">Buscar Dispositivos</h3>
-          <p class="text-xs text-gray-400 dark:text-gray-500">Base local · 3,400+ equipos · GSMArena</p>
+          <h3 class="font-bold text-gray-900 dark:text-white">Search Devices</h3>
+          <p class="text-xs text-gray-400 dark:text-gray-500">Local dataset · 3,400+ devices · GSMArena</p>
         </div>
       </div>
       @if (hasSearched()) {
         <button (click)="clearSearch()"
                 class="text-xs text-gray-400 hover:text-red-400 dark:hover:text-red-400 transition-colors">
-          Limpiar
+          Clear
         </button>
       }
     </div>
@@ -93,14 +93,14 @@
         </div>
         <input formControlName="query"
                type="text"
-               placeholder="Samsung Galaxy, iPhone, Laptop Dell..."
+               placeholder="Samsung Galaxy, iPhone, Dell Laptop..."
                class="input-field pl-9" />
       </div>
 
       <!-- Tipo de dispositivo -->
       <div class="sm:w-44">
         <select formControlName="type" class="input-field">
-          <option value="">Todos los tipos</option>
+          <option value="">All types</option>
           @for (type of deviceTypes; track type) {
             <option [value]="type">{{ type | titlecase }}</option>
           }
@@ -114,7 +114,7 @@
                      hover:bg-accent-dark dark:hover:bg-crimson-dark transition-colors duration-200
                      disabled:opacity-50 whitespace-nowrap"
               [disabled]="isSearching()">
-        Buscar
+        Search
       </button>
     </form>
 
@@ -133,11 +133,11 @@
             <svg class="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <p class="text-sm text-gray-400 dark:text-gray-500">Sin resultados. Intenta con otro término.</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500">No results found. Try a different search term.</p>
           </div>
         } @else {
           <p class="text-xs text-gray-400 dark:text-gray-500">
-            {{ searchResults().length }} resultado{{ searchResults().length !== 1 ? 's' : '' }} · Haz clic en + para añadir a la cotización
+            {{ searchResults().length }} result{{ searchResults().length !== 1 ? 's' : '' }} · Click + to add to the quote
           </p>
           <div class="flex flex-col gap-2 max-h-72 overflow-y-auto pr-1
                       scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
@@ -176,7 +176,7 @@
 
                 <!-- Botón añadir -->
                 <button (click)="addDeviceAsItem(device)"
-                        title="Añadir a la cotización"
+                        title="Add to quote"
                         class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center
                                bg-primary/10 text-primary dark:bg-accent/10 dark:text-accent
                                hover:bg-primary hover:text-white dark:hover:bg-accent dark:hover:text-white
@@ -199,8 +199,8 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <p class="text-xs text-gray-500 dark:text-gray-400">
-          Escribe el nombre de un dispositivo o selecciona un tipo para filtrarlo desde la base de <span class="font-semibold">3.400+ equipos</span> (offline, sin API key).
-          Resultados completos en consola.
+          Type a device name or select a type to filter from the <span class="font-semibold">3,400+ device</span> local dataset (offline, no API key needed).
+          Full results logged to console.
         </p>
       </div>
     }
