@@ -67,8 +67,8 @@ export class QuoteFormComponent implements OnInit {
     this.isSearching.set(true);
     this.hasSearched.set(true);
 
-    this.deviceSvc.search(query?.trim() ?? '', type || undefined).subscribe(results => {
-      this.searchResults.set(results);
+    this.deviceSvc.search(query?.trim() ?? '', type || undefined).subscribe(res => {
+      this.searchResults.set(res.data);
       this.isSearching.set(false);
     });
   }
