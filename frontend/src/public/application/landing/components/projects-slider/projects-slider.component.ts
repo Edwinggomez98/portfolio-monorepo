@@ -1,5 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 export interface Project {
   id: number;
@@ -14,7 +15,7 @@ export interface Project {
 @Component({
   selector: 'app-projects-slider',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './projects-slider.component.html',
 })
 export class ProjectsSliderComponent {

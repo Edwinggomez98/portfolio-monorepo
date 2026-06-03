@@ -25,8 +25,8 @@ export class ExperienceComponent {
     {
       role: 'Full Stack Developer',
       company: 'Kumisoft & Arrsoft',
-      period: '2020 — Presente',
-      current: false,
+      period: '2023 — 2026',
+      current: true,
       type: 'fullstack',
       projects: [
         {
@@ -58,7 +58,7 @@ export class ExperienceComponent {
     {
       role: 'Frontend Developer',
       company: 'Kumisoft',
-      period: '2019 — 2020',
+      period: '2022 — 2023',
       type: 'frontend',
       projects: [
         {
