@@ -2,11 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { QuoteActions } from '../../store/quote.actions';
 import { selectQuoteNumber, selectQuoteDate } from '../../store/quote.selectors';
-import { MobileApiService, MobileDevice } from '../../../../../shared/services/mobile-api/mobile-api.service';
+import { DeviceDataService, Device } from '../../../../../shared/services/device-data/device-data.service';
 
 @Component({
   selector: 'app-quote-form',
@@ -15,33 +14,30 @@ import { MobileApiService, MobileDevice } from '../../../../../shared/services/m
   templateUrl: './quote-form.component.html',
 })
 export class QuoteFormComponent implements OnInit {
-  private store        = inject(Store);
-  private fb           = inject(FormBuilder);
-  private mobileApi    = inject(MobileApiService);
+  private store      = inject(Store);
+  private fb         = inject(FormBuilder);
+  private deviceSvc  = inject(DeviceDataService);
 
   quoteNumber$ = this.store.select(selectQuoteNumber);
   quoteDate$   = this.store.select(selectQuoteDate);
 
-  // ── Formulario cliente (simplificado) ────────────────────────────────────
+  // ── Formulario cliente ────────────────────────────────────────────────
   clientForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     name:  [''],
     phone: [''],
   });
 
-  // ── Filtros MobileAPI ────────────────────────────────────────────────────
+  // ── Filtros de dispositivos ───────────────────────────────────────────
   filterForm = this.fb.group({
-    query:    [''],
-    type:     [''],
+    query: [''],
+    type:  [''],
   });
 
-  deviceTypes = this.mobileApi.getDeviceTypes();
-
-  searchResults = signal<MobileDevice[]>([]);
+  deviceTypes   = this.deviceSvc.getDeviceTypes();
+  searchResults = signal<Device[]>([]);
   isSearching   = signal(false);
   hasSearched   = signal(false);
-
-  private searchTrigger$ = new Subject<void>();
 
   ngOnInit(): void {
     // Sync cliente → store
@@ -53,25 +49,26 @@ export class QuoteFormComponent implements OnInit {
         }));
       });
 
-    // Búsqueda reactiva cuando cambia el query o el type
+    // Búsqueda reactiva al escribir o cambiar el tipo
     this.filterForm.valueChanges
-      .pipe(debounceTime(600), distinctUntilChanged())
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(() => this.triggerSearch());
   }
 
   triggerSearch(): void {
     const { query, type } = this.filterForm.value;
-    if (!query?.trim()) {
+
+    if (!query?.trim() && !type) {
       this.searchResults.set([]);
       this.hasSearched.set(false);
       return;
     }
-    this.searchTrigger$.next();
+
     this.isSearching.set(true);
     this.hasSearched.set(true);
 
-    this.mobileApi.search(query.trim(), type || undefined).subscribe(res => {
-      this.searchResults.set(res.data ?? []);
+    this.deviceSvc.search(query?.trim() ?? '', type || undefined).subscribe(results => {
+      this.searchResults.set(results);
       this.isSearching.set(false);
     });
   }
@@ -82,11 +79,17 @@ export class QuoteFormComponent implements OnInit {
     this.hasSearched.set(false);
   }
 
-  addDeviceAsItem(device: MobileDevice): void {
-    const description = [device.brand_name, device.name, device.hardware, device.storage]
-      .filter(Boolean).join(' · ');
+  addDeviceAsItem(device: Device): void {
+    const parts = [
+      device.brand,
+      device.model,
+      device.ram   ? `${device.ram} RAM`   : '',
+      device.storage ? device.storage       : '',
+      device.year  ? `(${device.year})`     : '',
+    ].filter(Boolean);
+
     this.store.dispatch(QuoteActions.addItem({
-      item: { description, quantity: 1, unitPrice: 0 },
+      item: { description: parts.join(' · '), quantity: 1, unitPrice: 0 },
     }));
   }
 
