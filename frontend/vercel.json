@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build:prod",
   "outputDirectory": "dist/portfolio-frontend/browser",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
