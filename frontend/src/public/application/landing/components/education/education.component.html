@@ -1,0 +1,99 @@
+<section id="education"
+  class="py-20 bg-gray-50 dark:bg-darkbg-card transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Encabezado -->
+    <div class="text-center mb-16">
+      <p class="section-subtitle">Formación académica</p>
+      <h2 class="section-title">Educación</h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- Títulos académicos -->
+      <div>
+        <h3 class="text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">
+          Títulos académicos
+        </h3>
+        <div class="flex flex-col gap-6">
+          @for (edu of educations; track edu.year) {
+            <div class="card flex gap-5">
+              <!-- Icono -->
+              <div class="flex-shrink-0 w-14 h-14 rounded-2xl
+                          bg-gradient-to-br from-primary to-accent
+                          dark:from-crimson dark:to-accent
+                          flex items-center justify-center text-2xl shadow-md">
+                {{ edu.icon }}
+              </div>
+
+              <!-- Contenido -->
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-start justify-between gap-2 mb-1">
+                  <h4 class="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                    {{ edu.degree }}
+                  </h4>
+                  @if (edu.highlight) {
+                    <span class="flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full
+                                 bg-accent/10 text-accent dark:bg-crimson/10 dark:text-crimson">
+                      {{ edu.highlight }}
+                    </span>
+                  }
+                </div>
+                <p class="text-sm font-medium text-primary dark:text-accent mb-1">
+                  {{ edu.institution }}
+                </p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-mono mb-3">
+                  📅 {{ edu.year }}
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                  {{ edu.description }}
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Certificaciones adicionales -->
+      <div>
+        <h3 class="text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">
+          Cursos & Certificaciones
+        </h3>
+        <div class="flex flex-col gap-3">
+          @for (cert of certifications; track cert.name) {
+            <div class="flex items-center gap-4 p-4 rounded-xl
+                        bg-white dark:bg-darkbg-surface
+                        border border-gray-100 dark:border-gray-700
+                        hover:border-primary dark:hover:border-accent
+                        transition-colors duration-200">
+              <span class="text-xl">{{ cert.icon }}</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">
+                  {{ cert.name }}
+                </p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">
+                  {{ cert.provider }} · {{ cert.year }}
+                </p>
+              </div>
+              <span class="flex-shrink-0 text-xs font-mono text-gray-300 dark:text-gray-600">
+                {{ cert.year }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- CTA continua aprendiendo -->
+        <div class="mt-6 p-4 rounded-xl text-center
+                    bg-gradient-to-r from-primary/5 to-accent/5
+                    dark:from-crimson/5 dark:to-accent/5
+                    border border-primary/10 dark:border-crimson/10">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            🚀 En constante aprendizaje. Actualmente explorando
+            <span class="font-semibold text-primary dark:text-accent">AI/LLM APIs</span> e
+            <span class="font-semibold text-primary dark:text-accent">infraestructura cloud</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

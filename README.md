@@ -1,6 +1,10 @@
-# Portfolio Monorepo
+# Portfolio — Edwing Gomez
 
-Monorepo con **Frontend (Angular 19)** y **Backend (NestJS + PostgreSQL)**, ambos estructurados bajo **Arquitectura Hexagonal con Vertical Slicing**.
+Monorepo con **Frontend (Angular 19 + TailwindCSS)** y **Backend (NestJS + PostgreSQL)**, ambos estructurados bajo **Arquitectura Hexagonal con Vertical Slicing**.
+
+El frontend incluye una **landing page pública** como portfolio profesional con dark mode, slider de proyectos, sección de experiencia, habilidades y educación.
+
+> 🌐 **Portfolio:** [edwinggomez.dev](https://github.com/Edwinggomez98) · [LinkedIn](https://www.linkedin.com/in/edwing-gomez-782a72289/) · [GitHub](https://github.com/Edwinggomez98)
 
 ---
 
@@ -61,8 +65,25 @@ frontend/src/
 │       └── state/
 └── shared/
     ├── components/
+    │   ├── header/         # Header fijo: logo, nav, toggle dark mode, botón CV
+    │   └── footer/         # Footer: redes sociales, formulario de contacto
+    ├── services/
+    │   └── theme.service.ts  # Dark mode con Angular Signals + localStorage
     ├── directives/
     └── pipes/
+```
+
+#### Landing Page — Componentes de feature
+
+```
+public/application/landing/
+├── landing-page.component.ts        # Componente orquestador
+└── components/
+    ├── hero/                        # Sección principal con métricas y CTA
+    ├── experience/                  # Timeline laboral (Kumisoft & Arrsoft)
+    ├── projects-slider/             # Carrusel de proyectos con miniaturas
+    ├── skills/                      # Barras de progreso por categoría
+    └── education/                   # Títulos académicos y certificaciones
 ```
 
 ---
@@ -111,14 +132,16 @@ backend/src/
 
 ## Stack
 
-| Capa       | Tecnología                                      |
-|------------|-------------------------------------------------|
-| Frontend   | Angular 19, TypeScript 5.6, RxJS 7             |
-| Backend    | NestJS 10, TypeScript 5.1, TypeORM 0.3         |
-| Base datos | PostgreSQL 15                                   |
-| Auth       | JWT (Passport.js)                               |
-| Docs API   | Swagger (@nestjs/swagger)                       |
-| Deploy     | Docker Compose (dev)                            |
+| Capa       | Tecnología                                               |
+|------------|----------------------------------------------------------|
+| Frontend   | Angular 19, TypeScript 5.6, RxJS 7, TailwindCSS 3       |
+| Estilos    | TailwindCSS (dark mode, responsive mobile-first)         |
+| Estado     | Angular Signals (theme), RxJS                            |
+| Backend    | NestJS 10, TypeScript 5.1, TypeORM 0.3                  |
+| Base datos | PostgreSQL 15                                            |
+| Auth       | JWT (Passport.js)                                        |
+| Docs API   | Swagger (@nestjs/swagger)                                |
+| Deploy     | Docker Compose (dev)                                     |
 
 ---
 

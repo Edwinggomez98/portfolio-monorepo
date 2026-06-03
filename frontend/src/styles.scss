@@ -1,11 +1,57 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-white text-gray-900 transition-colors duration-300;
+  }
+
+  body.dark {
+    @apply bg-darkbg text-gray-100;
+  }
 }
 
-html,
-body {
-  height: 100%;
-  font-family: sans-serif;
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
+           bg-primary text-white hover:bg-primary-dark transition-all duration-200
+           dark:bg-crimson dark:hover:bg-crimson-dark shadow-md hover:shadow-lg;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
+           border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200
+           dark:border-crimson dark:text-crimson dark:hover:bg-crimson dark:hover:text-white;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2;
+  }
+
+  .section-subtitle {
+    @apply text-accent dark:text-crimson font-semibold text-sm uppercase tracking-widest mb-4;
+  }
+
+  .card {
+    @apply bg-white dark:bg-darkbg-card rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6;
+  }
 }
+

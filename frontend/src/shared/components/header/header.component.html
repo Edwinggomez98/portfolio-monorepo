@@ -1,0 +1,115 @@
+<header
+  class="fixed top-0 left-0 right-0 z-50 h-16
+         bg-white/90 dark:bg-darkbg/90 backdrop-blur-md
+         border-b border-gray-100 dark:border-gray-800
+         transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+
+    <!-- Logo / Nombre -->
+    <a href="#hero" class="flex items-center gap-2 group">
+      <span class="text-xl font-black tracking-tight
+                   text-primary dark:text-accent
+                   group-hover:opacity-80 transition-opacity">
+        Edwing<span class="text-gray-900 dark:text-white">.</span>Gomez
+      </span>
+      <span class="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded
+                   bg-accent/10 dark:bg-crimson/10
+                   text-accent dark:text-crimson
+                   border border-accent/20 dark:border-crimson/20">
+        dev
+      </span>
+    </a>
+
+    <!-- Navegación desktop -->
+    <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+      <a href="#experience" class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Experiencia</a>
+      <a href="#projects"   class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Proyectos</a>
+      <a href="#skills"     class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Habilidades</a>
+      <a href="#education"  class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Educación</a>
+      <a href="#contact"    class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-accent transition-colors">Contacto</a>
+    </nav>
+
+    <!-- Controles lado derecho -->
+    <div class="flex items-center gap-3">
+
+      <!-- Toggle modo claro / oscuro -->
+      <button
+        type="button"
+        role="switch"
+        (click)="theme.toggle()"
+        [attr.aria-checked]="theme.isDark()"
+        [attr.aria-label]="theme.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+        class="group relative inline-flex h-9 w-16 shrink-0 cursor-pointer items-center
+               rounded-full border-2 p-1
+               transition-all duration-300 ease-in-out
+               focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+               focus-visible:ring-primary dark:focus-visible:ring-accent"
+        [class.bg-sky-200]="!theme.isDark()"
+        [class.border-sky-300]="!theme.isDark()"
+        [class.bg-indigo-900]="theme.isDark()"
+        [class.border-indigo-700]="theme.isDark()">
+
+        <!-- Pista: estrellas visibles en modo oscuro -->
+        <span aria-hidden="true"
+              class="absolute inset-0 rounded-full overflow-hidden transition-opacity duration-500"
+              [class.opacity-0]="!theme.isDark()"
+              [class.opacity-100]="theme.isDark()">
+          <span class="absolute top-1 left-3 h-0.5 w-0.5 rounded-full bg-white/60"></span>
+          <span class="absolute top-3 left-6 h-0.5 w-0.5 rounded-full bg-white/40"></span>
+          <span class="absolute top-1.5 left-9 h-1 w-1 rounded-full bg-white/70"></span>
+          <span class="absolute top-4 left-11 h-0.5 w-0.5 rounded-full bg-white/50"></span>
+        </span>
+
+        <!-- Thumb -->
+        <span
+          class="relative inline-flex h-7 w-7 items-center justify-center rounded-full shadow-md
+                 transition-all duration-300 ease-in-out
+                 group-hover:scale-110"
+          [class.translate-x-0]="!theme.isDark()"
+          [class.translate-x-7]="theme.isDark()"
+          [class.bg-amber-400]="!theme.isDark()"
+          [class.bg-slate-800]="theme.isDark()">
+
+          <!-- Icono sol -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="absolute h-4 w-4 text-amber-900 transition-all duration-300"
+            [class.opacity-100]="!theme.isDark()"
+            [class.opacity-0]="theme.isDark()"
+            [class.rotate-0]="!theme.isDark()"
+            [class.rotate-90]="theme.isDark()"
+            aria-hidden="true">
+            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+          </svg>
+
+          <!-- Icono luna -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="absolute h-4 w-4 text-indigo-200 transition-all duration-300"
+            [class.opacity-0]="!theme.isDark()"
+            [class.opacity-100]="theme.isDark()"
+            [class.-rotate-90]="!theme.isDark()"
+            [class.rotate-0]="theme.isDark()"
+            aria-hidden="true">
+            <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
+          </svg>
+        </span>
+      </button>
+
+      <!-- Botón Descargar CV -->
+      <button
+        (click)="downloadCV()"
+        class="btn-primary text-xs sm:text-sm px-3 sm:px-5 py-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        <span class="hidden sm:inline">Descargar CV</span>
+        <span class="sm:hidden">CV</span>
+      </button>
+    </div>
+  </div>
+</header>
