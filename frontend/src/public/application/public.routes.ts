@@ -8,4 +8,11 @@ export const PUBLIC_ROUTES: Routes = [
         (m) => m.LandingPageComponent
       ),
   },
+  {
+    path: 'cotizador',
+    loadComponent: () =>
+      import('./quote/quote-page.component').then(
+        (m) => m.QuotePageComponent
+      ),
+  },
 ];
