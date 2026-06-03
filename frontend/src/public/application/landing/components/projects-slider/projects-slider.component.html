@@ -115,9 +115,9 @@
       </div>
 
       <!-- Carrusel de miniaturas (scroll horizontal móvil + snap) -->
-      <div class="mt-6 overflow-x-auto snap-x snap-mandatory pb-3
+      <div class="mt-6 overflow-x-auto snap-x snap-mandatory py-3 px-1
                   scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
-        <div class="flex gap-3 w-max mx-auto px-2">
+        <div class="flex gap-3 w-max mx-auto px-4">
           @for (project of projects; track project.id; let i = $index) {
             <button
               (click)="goTo(i)"
