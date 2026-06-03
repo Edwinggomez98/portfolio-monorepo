@@ -60,19 +60,17 @@ import { QuoteSummaryComponent } from './components/quote-summary/quote-summary.
 
       <!-- Layout principal -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-          <!-- Columna principal (2/3) -->
+          <!-- Columna izquierda (2/3): cliente + filtros + tabla ítems -->
           <div class="lg:col-span-2 space-y-6">
             <app-quote-form />
             <app-quote-item-list />
           </div>
 
-          <!-- Sidebar resumen (1/3) -->
-          <div class="lg:col-span-1">
-            <div class="sticky top-20">
-              <app-quote-summary />
-            </div>
+          <!-- Sidebar derecho (1/3): resumen sticky -->
+          <div class="lg:col-span-1 sticky top-20">
+            <app-quote-summary />
           </div>
         </div>
       </div>

@@ -1,17 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { QuoteActions } from '../../store/quote.actions';
-import {
-  selectQuoteClient,
-  selectQuoteCurrency,
-  selectQuoteTaxRate,
-  selectQuoteValidUntil,
-  selectQuoteNumber,
-  selectQuoteDate,
-} from '../../store/quote.selectors';
+import { selectQuoteNumber, selectQuoteDate } from '../../store/quote.selectors';
+import { MobileApiService, MobileDevice } from '../../../../../shared/services/mobile-api/mobile-api.service';
 
 @Component({
   selector: 'app-quote-form',
@@ -20,36 +15,83 @@ import {
   templateUrl: './quote-form.component.html',
 })
 export class QuoteFormComponent implements OnInit {
-  private store = inject(Store);
-  private fb    = inject(FormBuilder);
+  private store        = inject(Store);
+  private fb           = inject(FormBuilder);
+  private mobileApi    = inject(MobileApiService);
 
   quoteNumber$ = this.store.select(selectQuoteNumber);
   quoteDate$   = this.store.select(selectQuoteDate);
 
-  form = this.fb.group({
-    clientName:    ['', Validators.required],
-    clientEmail:   ['', Validators.email],
-    clientCompany: [''],
-    validUntil:    [''],
-    currency:      ['USD'],
-    taxRate:       [16, [Validators.min(0), Validators.max(100)]],
+  // ── Formulario cliente (simplificado) ────────────────────────────────────
+  clientForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    name:  [''],
+    phone: [''],
   });
 
-  ngOnInit(): void {
-    this.store.select(selectQuoteClient).subscribe(c => {
-      this.form.patchValue({ clientName: c.name, clientEmail: c.email, clientCompany: c.company }, { emitEvent: false });
-    });
-    this.store.select(selectQuoteValidUntil).subscribe(v => this.form.patchValue({ validUntil: v }, { emitEvent: false }));
-    this.store.select(selectQuoteCurrency).subscribe(c  => this.form.patchValue({ currency: c },   { emitEvent: false }));
-    this.store.select(selectQuoteTaxRate).subscribe(t   => this.form.patchValue({ taxRate: t },    { emitEvent: false }));
+  // ── Filtros MobileAPI ────────────────────────────────────────────────────
+  filterForm = this.fb.group({
+    query:    [''],
+    type:     [''],
+  });
 
-    this.form.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe(v => {
-      this.store.dispatch(QuoteActions.updateClient({
-        client: { name: v.clientName ?? '', email: v.clientEmail ?? '', company: v.clientCompany ?? '' },
-      }));
-      if (v.validUntil) this.store.dispatch(QuoteActions.updateValidUntil({ validUntil: v.validUntil }));
-      if (v.currency)   this.store.dispatch(QuoteActions.updateCurrency({ currency: v.currency as 'USD' | 'EUR' | 'VES' }));
-      if (v.taxRate != null) this.store.dispatch(QuoteActions.updateTaxRate({ taxRate: v.taxRate }));
+  deviceTypes = this.mobileApi.getDeviceTypes();
+
+  searchResults = signal<MobileDevice[]>([]);
+  isSearching   = signal(false);
+  hasSearched   = signal(false);
+
+  private searchTrigger$ = new Subject<void>();
+
+  ngOnInit(): void {
+    // Sync cliente → store
+    this.clientForm.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(v => {
+        this.store.dispatch(QuoteActions.updateClient({
+          client: { name: v.name ?? '', email: v.email ?? '', company: v.phone ?? '' },
+        }));
+      });
+
+    // Búsqueda reactiva cuando cambia el query o el type
+    this.filterForm.valueChanges
+      .pipe(debounceTime(600), distinctUntilChanged())
+      .subscribe(() => this.triggerSearch());
+  }
+
+  triggerSearch(): void {
+    const { query, type } = this.filterForm.value;
+    if (!query?.trim()) {
+      this.searchResults.set([]);
+      this.hasSearched.set(false);
+      return;
+    }
+    this.searchTrigger$.next();
+    this.isSearching.set(true);
+    this.hasSearched.set(true);
+
+    this.mobileApi.search(query.trim(), type || undefined).subscribe(res => {
+      this.searchResults.set(res.data ?? []);
+      this.isSearching.set(false);
     });
+  }
+
+  clearSearch(): void {
+    this.filterForm.patchValue({ query: '', type: '' });
+    this.searchResults.set([]);
+    this.hasSearched.set(false);
+  }
+
+  addDeviceAsItem(device: MobileDevice): void {
+    const description = [device.brand_name, device.name, device.hardware, device.storage]
+      .filter(Boolean).join(' · ');
+    this.store.dispatch(QuoteActions.addItem({
+      item: { description, quantity: 1, unitPrice: 0 },
+    }));
+  }
+
+  hasClientError(field: string, error: string): boolean {
+    const c = this.clientForm.get(field);
+    return !!(c?.hasError(error) && c?.touched);
   }
 }
