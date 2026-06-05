@@ -42,23 +42,62 @@ export class DeviceDataService {
   /** Cache del asset local — se usa solo si el backend falla */
   private localDevices$: Observable<Device[]> | null = null;
 
-  search(query: string, type?: string): Observable<{ data: Device[]; total: number; source: 'api' | 'local' }> {
-    let params = new HttpParams().set('limit', '50');
-    if (query?.trim()) params = params.set('q', query.trim());
-    if (type && type !== 'all') params = params.set('type', type);
+  search(query: string, brand?: string, type?: string): Observable<{ data: Device[]; total: number; source: 'api' | 'local' }> {
+    let params = new HttpParams().set('limit', '200');
+    if (query?.trim())          params = params.set('q',     query.trim());
+    if (brand && brand !== 'all') params = params.set('brand', brand);
+    if (type  && type  !== 'all') params = params.set('type',  type);
 
     return this.http.get<BackendResponse>(this.apiUrl, { params }).pipe(
       map(res => {
         const data = res.data.map(d => ({ ...d, fullName: `${d.brand} ${d.model}`.toLowerCase() }));
-        this.logResults('api', query, type, data);
         return { data, total: res.total, source: 'api' as const };
       }),
-      catchError(() => this.searchLocal(query, type)),
+      catchError(() => this.searchLocal(query, brand, type)),
     );
   }
 
-  getDeviceTypes(): string[] {
-    return ['smartphone', 'tablet', 'laptop', 'smartwatch'];
+  getBrands(type?: string): Observable<string[]> {
+    let params = new HttpParams();
+    if (type && type !== 'all') params = params.set('type', type);
+    return this.http.get<string[]>(`${this.apiUrl}/brands`, { params }).pipe(
+      catchError(() => this.getLocalBrands(type)),
+    );
+  }
+
+  getTypes(brand?: string): Observable<string[]> {
+    let params = new HttpParams();
+    if (brand && brand !== 'all') params = params.set('brand', brand);
+    return this.http.get<string[]>(`${this.apiUrl}/types`, { params }).pipe(
+      catchError(() => this.getLocalTypes(brand)),
+    );
+  }
+
+  private getLocalBrands(type?: string): Observable<string[]> {
+    return this.getLocalDevices().pipe(
+      map(devices => {
+        const filtered = type && type !== 'all' ? devices.filter(d => d.type === type) : devices;
+        return [...new Set(filtered.map(d => d.brand))].filter(Boolean).sort();
+      }),
+    );
+  }
+
+  private getLocalTypes(brand?: string): Observable<string[]> {
+    return this.getLocalDevices().pipe(
+      map(devices => {
+        const filtered = brand && brand !== 'all'
+          ? devices.filter(d => d.brand.toLowerCase() === brand.toLowerCase())
+          : devices;
+        return [...new Set(filtered.map(d => d.type))].filter(Boolean).sort();
+      }),
+    );
+  }
+
+  syncFromExternalApi(): Observable<{ inserted: number; skipped: number; source: string }> {
+    return this.http.post<{ inserted: number; skipped: number; source: string }>(
+      `${this.apiUrl}/sync`,
+      {},
+    );
   }
 
   // ── Fallback local ────────────────────────────────────────────────────────
@@ -84,26 +123,16 @@ export class DeviceDataService {
     return this.localDevices$;
   }
 
-  private searchLocal(query: string, type?: string): Observable<{ data: Device[]; total: number; source: 'api' | 'local' }> {
+  private searchLocal(query: string, brand?: string, type?: string): Observable<{ data: Device[]; total: number; source: 'api' | 'local' }> {
     const q = query?.toLowerCase().trim() ?? '';
     return this.getLocalDevices().pipe(
       map(devices => {
         let results = devices;
-        if (type && type !== 'all') results = results.filter(d => d.type === type);
+        if (brand && brand !== 'all') results = results.filter(d => d.brand.toLowerCase() === brand.toLowerCase());
+        if (type  && type  !== 'all') results = results.filter(d => d.type === type);
         if (q) results = results.filter(d => d.fullName.includes(q));
-        const data = results.slice(0, 50);
-        this.logResults('local', query, type, data);
-        return { data, total: results.length, source: 'local' as const };
+        return { data: results.slice(0, 200), total: results.length, source: 'local' as const };
       }),
     );
-  }
-
-  private logResults(source: string, query: string, type: string | undefined, data: Device[]) {
-    console.group(`%c[DeviceDataService] Search (${source})`, 'color: #06B6D4; font-weight: bold');
-    console.log('Query:', query || '(none)');
-    console.log('Type filter:', type || 'all');
-    console.log(`Results: ${data.length}`);
-    if (data.length > 0) console.log('First result:', data[0]);
-    console.groupEnd();
   }
 }

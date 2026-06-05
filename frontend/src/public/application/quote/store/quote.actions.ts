@@ -1,5 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { QuoteClient, QuoteItem } from '../../../domain/models/quote/quote.model';
+import { QuoteClient, QuoteItem, SavedQuoteSummary } from '../../../domain/models/quote/quote.model';
+import { SavedQuote } from '../../../../shared/services/saved-quotes/saved-quotes.service';
 
 export const QuoteActions = createActionGroup({
   source: 'Quote',
@@ -22,6 +23,17 @@ export const QuoteActions = createActionGroup({
     'Generate Pdf':         emptyProps(),
     'Generate Pdf Success': emptyProps(),
     'Generate Pdf Failure': props<{ error: string }>(),
+
+    // Historial
+    'Load History':         emptyProps(),
+    'Load History Success': props<{ history: SavedQuoteSummary[] }>(),
+    'Load History Failure': props<{ error: string }>(),
+
+    'View Saved Quote':         props<{ id: string }>(),
+    'View Saved Quote Success': props<{ saved: SavedQuote }>(),
+    'View Saved Quote Failure': props<{ error: string }>(),
+
+    'Clear History View': emptyProps(),
 
     // Reset
     'Reset Quote': emptyProps(),

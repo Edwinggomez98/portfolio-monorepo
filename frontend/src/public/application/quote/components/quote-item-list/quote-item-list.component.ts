@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { QuoteActions } from '../../store/quote.actions';
-import { selectQuoteCurrency, selectQuoteItems } from '../../store/quote.selectors';
+import {
+  selectQuoteItems,
+  selectIsViewingHistory,
+  selectViewingSavedQuoteLabel,
+} from '../../store/quote.selectors';
 import { QuoteItem } from '../../../../domain/models/quote/quote.model';
 
 @Component({
@@ -16,31 +20,22 @@ export class QuoteItemListComponent {
   private store = inject(Store);
   private fb    = inject(FormBuilder);
 
-  items$    = this.store.select(selectQuoteItems);
-  currency$ = this.store.select(selectQuoteCurrency);
+  items$             = this.store.select(selectQuoteItems);
+  isViewingHistory$  = this.store.select(selectIsViewingHistory);
+  viewingLabel$      = this.store.select(selectViewingSavedQuoteLabel);
+
+  exitHistoryView(): void {
+    this.editingId = null;
+    this.store.dispatch(QuoteActions.clearHistoryView());
+  }
 
   editingId: string | null = null;
-
-  addForm = this.fb.group({
-    description: ['', Validators.required],
-    quantity:    [1, [Validators.required, Validators.min(1)]],
-    unitPrice:   [0, [Validators.required, Validators.min(0)]],
-  });
 
   editForm = this.fb.group({
     description: ['', Validators.required],
     quantity:    [1, [Validators.required, Validators.min(1)]],
     unitPrice:   [0, [Validators.required, Validators.min(0)]],
   });
-
-  addItem(): void {
-    if (this.addForm.invalid) { this.addForm.markAllAsTouched(); return; }
-    const v = this.addForm.value;
-    this.store.dispatch(QuoteActions.addItem({
-      item: { description: v.description!, quantity: v.quantity!, unitPrice: v.unitPrice! },
-    }));
-    this.addForm.reset({ description: '', quantity: 1, unitPrice: 0 });
-  }
 
   startEdit(item: QuoteItem): void {
     this.editingId = item.id;
@@ -61,11 +56,6 @@ export class QuoteItemListComponent {
 
   removeItem(id: string): void {
     this.store.dispatch(QuoteActions.removeItem({ id }));
-  }
-
-  previewSubtotal(): number {
-    const v = this.addForm.value;
-    return (v.quantity ?? 0) * (v.unitPrice ?? 0);
   }
 
   trackById(_: number, item: QuoteItem): string { return item.id; }

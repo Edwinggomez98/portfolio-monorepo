@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Query,
   ParseIntPipe,
   DefaultValuePipe,
@@ -37,14 +38,23 @@ export class DevicesController {
   }
 
   @Get('types')
-  @ApiOperation({ summary: 'Lista de tipos de dispositivo disponibles' })
-  async getTypes() {
-    return this.svc.getTypes();
+  @ApiOperation({ summary: 'Lista de tipos disponibles (filtrable por marca)' })
+  @ApiQuery({ name: 'brand', required: false })
+  async getTypes(@Query('brand') brand?: string) {
+    return this.svc.getTypes(brand);
   }
 
   @Get('brands')
-  @ApiOperation({ summary: 'Lista de marcas disponibles' })
-  async getBrands() {
-    return this.svc.getBrands();
+  @ApiOperation({ summary: 'Lista de marcas disponibles (filtrable por tipo)' })
+  @ApiQuery({ name: 'type', required: false })
+  async getBrands(@Query('type') type?: string) {
+    return this.svc.getBrands(type);
+  }
+
+  @Post('sync')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Sincronizar dispositivos desde API externa (dummyjson)' })
+  async syncFromExternalApi() {
+    return this.svc.syncFromExternalApi();
   }
 }

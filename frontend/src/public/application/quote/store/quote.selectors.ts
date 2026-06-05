@@ -26,3 +26,21 @@ export const selectIsGenerating = createSelector(
 export const selectHasItems = createSelector(
   selectQuoteItems, items => items.length > 0
 );
+
+export const selectQuoteHistory = createSelector(selectQuoteState, s => s.history);
+
+export const selectIsLoadingHistory = createSelector(
+  selectQuoteStatus, s => s === 'loading-history',
+);
+
+export const selectViewingSavedQuoteId = createSelector(
+  selectQuoteState, s => s.viewingSavedQuoteId,
+);
+
+export const selectViewingSavedQuoteLabel = createSelector(
+  selectQuoteState, s => s.viewingSavedQuoteLabel,
+);
+
+export const selectIsViewingHistory = createSelector(
+  selectViewingSavedQuoteId, id => !!id,
+);

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import * as https from 'https';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DeviceEntity } from '../../adapters/output/persistence/entities/device.entity';
 
 export interface DeviceSearchQuery {
@@ -12,8 +13,27 @@ export interface DeviceSearchQuery {
   offset?: number;
 }
 
+interface DummyJsonProduct {
+  id: number;
+  title: string;
+  brand?: string;
+  price: number;
+  category: string;
+  description?: string;
+  tags?: string[];
+  ram?: string;
+  storage?: string;
+}
+
+interface DummyJsonResponse {
+  products: DummyJsonProduct[];
+  total: number;
+}
+
 @Injectable()
 export class DevicesService {
+  private readonly logger = new Logger(DevicesService.name);
+
   constructor(
     @InjectRepository(DeviceEntity)
     private readonly repo: Repository<DeviceEntity>,
@@ -41,21 +61,23 @@ export class DevicesService {
     return { data, total };
   }
 
-  async getTypes(): Promise<string[]> {
-    const rows = await this.repo
+  async getTypes(brand?: string): Promise<string[]> {
+    const qb = this.repo
       .createQueryBuilder('d')
       .select('DISTINCT d.type', 'type')
-      .orderBy('d.type')
-      .getRawMany<{ type: string }>();
+      .orderBy('d.type');
+    if (brand) qb.where('d.brand ILIKE :brand', { brand });
+    const rows = await qb.getRawMany<{ type: string }>();
     return rows.map(r => r.type);
   }
 
-  async getBrands(): Promise<string[]> {
-    const rows = await this.repo
+  async getBrands(type?: string): Promise<string[]> {
+    const qb = this.repo
       .createQueryBuilder('d')
       .select('DISTINCT d.brand', 'brand')
-      .orderBy('d.brand')
-      .getRawMany<{ brand: string }>();
+      .orderBy('d.brand');
+    if (type) qb.where('d.type = :type', { type });
+    const rows = await qb.getRawMany<{ brand: string }>();
     return rows.map(r => r.brand);
   }
 
@@ -64,7 +86,6 @@ export class DevicesService {
   }
 
   async bulkInsert(devices: Partial<DeviceEntity>[]): Promise<void> {
-    // Inserta en lotes de 500 para no saturar PostgreSQL
     const BATCH = 500;
     for (let i = 0; i < devices.length; i += BATCH) {
       await this.repo
@@ -74,5 +95,70 @@ export class DevicesService {
         .values(devices.slice(i, i + BATCH))
         .execute();
     }
+  }
+
+  private httpsGet(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const parsed = new URL(url);
+      const req = https.get(
+        { hostname: parsed.hostname, path: parsed.pathname + parsed.search, rejectUnauthorized: false },
+        (res) => {
+          let data = '';
+          res.on('data', (chunk: Buffer) => (data += chunk.toString()));
+          res.on('end', () => resolve(data));
+        },
+      );
+      req.on('error', reject);
+    });
+  }
+
+  async syncFromExternalApi(): Promise<{ inserted: number; skipped: number; categories: string[] }> {
+    const CATEGORY_TYPE_MAP: Record<string, string> = {
+      smartphones:         'smartphone',
+      laptops:             'laptop',
+      tablets:             'tablet',
+      'mobile-accessories': 'accessory',
+    };
+
+    let inserted = 0;
+    let skipped  = 0;
+
+    for (const [category, deviceType] of Object.entries(CATEGORY_TYPE_MAP)) {
+      const url = `https://dummyjson.com/products/category/${category}?limit=100`;
+      this.logger.log(`Fetching ${category} from ${url}`);
+
+      const raw  = await this.httpsGet(url);
+      const json = JSON.parse(raw) as DummyJsonResponse;
+
+      for (const p of json.products ?? []) {
+        const titleWords  = (p.title ?? '').trim().split(/\s+/);
+        const brandRaw    = p.brand?.trim() || titleWords[0] || 'Unknown';
+        const modelRaw    = titleWords
+          .join(' ')
+          .replace(new RegExp(`^${brandRaw}\\s*`, 'i'), '')
+          .trim() || p.title;
+
+        const exists = await this.repo.findOne({ where: { brand: brandRaw, model: modelRaw } });
+        if (exists) { skipped++; continue; }
+
+        await this.repo.save(
+          this.repo.create({
+            brand:   brandRaw,
+            model:   modelRaw || p.title,
+            type:    deviceType,
+            price:   p.price ? `$${p.price}` : null,
+            year:    null,
+            ram:     null,
+            storage: null,
+            os:      null,
+            chipset: null,
+          }),
+        );
+        inserted++;
+      }
+    }
+
+    this.logger.log(`Sync done: ${inserted} inserted, ${skipped} skipped`);
+    return { inserted, skipped, categories: Object.keys(CATEGORY_TYPE_MAP) };
   }
 }

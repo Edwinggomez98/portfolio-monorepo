@@ -48,7 +48,20 @@ export const initialQuoteState: QuoteState = {
   },
   status: 'idle',
   error:  null,
+  history: [],
+  viewingSavedQuoteId: null,
+  viewingSavedQuoteLabel: null,
 };
+
+function mapSavedToItems(snapshot: { description: string; quantity: number; unitPrice: number; total: number }[]) {
+  return snapshot.map(s => ({
+    id:          generateId(),
+    description: s.description,
+    quantity:    Number(s.quantity),
+    unitPrice:   Number(s.unitPrice),
+    subtotal:    Number(s.total),
+  }));
+}
 
 export const quoteReducer = createReducer(
   initialQuoteState,
@@ -58,9 +71,21 @@ export const quoteReducer = createReducer(
   ),
 
   on(QuoteActions.addItem, (state, { item }) => {
+    const clearedView = { viewingSavedQuoteId: null as string | null, viewingSavedQuoteLabel: null as string | null };
+    const existing = state.quote.items.find(
+      i => i.description.trim().toLowerCase() === item.description.trim().toLowerCase()
+    );
+    if (existing) {
+      const items = state.quote.items.map(i => {
+        if (i.id !== existing.id) return i;
+        const quantity = i.quantity + item.quantity;
+        return { ...i, quantity, subtotal: quantity * i.unitPrice };
+      });
+      return calcTotals({ ...state, ...clearedView, quote: { ...state.quote, items } });
+    }
     const subtotal = item.quantity * item.unitPrice;
     const newItem  = { ...item, id: generateId(), subtotal };
-    return calcTotals({ ...state, quote: { ...state.quote, items: [...state.quote.items, newItem] } });
+    return calcTotals({ ...state, ...clearedView, quote: { ...state.quote, items: [...state.quote.items, newItem] } });
   }),
 
   on(QuoteActions.updateItem, (state, { id, changes }) => {
@@ -103,6 +128,48 @@ export const quoteReducer = createReducer(
 
   on(QuoteActions.generatePdfFailure, (state, { error }) =>
     ({ ...state, status: 'error' as const, error })
+  ),
+
+  on(QuoteActions.loadHistory, state =>
+    ({ ...state, status: 'loading-history' as const, error: null }),
+  ),
+
+  on(QuoteActions.loadHistorySuccess, (state, { history }) =>
+    ({ ...state, status: 'idle' as const, history }),
+  ),
+
+  on(QuoteActions.loadHistoryFailure, (state, { error }) =>
+    ({ ...state, status: 'error' as const, error }),
+  ),
+
+  on(QuoteActions.viewSavedQuote, state =>
+    ({ ...state, status: 'loading-history' as const, error: null }),
+  ),
+
+  on(QuoteActions.viewSavedQuoteSuccess, (state, { saved }) => {
+    const items = mapSavedToItems(saved.itemsSnapshot as { description: string; quantity: number; unitPrice: number; total: number }[]);
+    const label = `${saved.quoteNumber} · ${new Date(saved.createdAt).toLocaleDateString()}`;
+    return calcTotals({
+      ...state,
+      status: 'idle' as const,
+      viewingSavedQuoteId: saved.id,
+      viewingSavedQuoteLabel: label,
+      quote: {
+        ...state.quote,
+        items,
+        notes: saved.notes ?? '',
+        currency: (saved.currency as 'USD' | 'EUR' | 'VES') || 'USD',
+        taxRate: Number(saved.taxRate),
+      },
+    });
+  }),
+
+  on(QuoteActions.viewSavedQuoteFailure, (state, { error }) =>
+    ({ ...state, status: 'error' as const, error }),
+  ),
+
+  on(QuoteActions.clearHistoryView, state =>
+    ({ ...state, viewingSavedQuoteId: null, viewingSavedQuoteLabel: null }),
   ),
 
   on(QuoteActions.resetQuote, () => ({

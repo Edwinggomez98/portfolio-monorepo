@@ -31,6 +31,7 @@ async function main() {
   const dotenv = await import('dotenv');
   dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
+  const useSsl = process.env.DB_SSL === 'true';
   const ds = new DataSource({
     type: 'postgres',
     host:     process.env.DB_HOST     ?? 'localhost',
@@ -40,6 +41,7 @@ async function main() {
     database: process.env.DB_NAME     ?? 'portfolio_db',
     entities: [DeviceEntity],
     synchronize: false,
+    ...(useSsl && { ssl: { rejectUnauthorized: false } }),
   });
 
   await ds.initialize();

@@ -5,6 +5,16 @@
 /* Google Fonts se cargan via <link> en index.html */
 
 @layer base {
+  /* Quitar flechas de inputs numéricos */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
   * {
     margin: 0;
     padding: 0;

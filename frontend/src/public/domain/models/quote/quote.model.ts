@@ -27,8 +27,20 @@ export interface Quote {
   total: number;
 }
 
+export interface SavedQuoteSummary {
+  id: string;
+  quoteNumber: string;
+  itemCount: number;
+  total: number;
+  currency: string;
+  createdAt: string;
+}
+
 export interface QuoteState {
   quote: Quote;
-  status: 'idle' | 'saving' | 'generating-pdf' | 'error';
+  status: 'idle' | 'saving' | 'generating-pdf' | 'loading-history' | 'error';
   error: string | null;
+  history: SavedQuoteSummary[];
+  viewingSavedQuoteId: string | null;
+  viewingSavedQuoteLabel: string | null;
 }

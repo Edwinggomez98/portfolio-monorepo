@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -8,7 +8,9 @@ import {
   selectQuoteSubtotal, selectQuoteTax, selectQuoteTotal,
   selectQuoteTaxRate, selectQuoteCurrency, selectQuoteNotes,
   selectIsGenerating, selectHasItems,
+  selectQuoteHistory, selectIsLoadingHistory,
 } from '../../store/quote.selectors';
+import { SavedQuoteSummary } from '../../../../domain/models/quote/quote.model';
 
 @Component({
   selector: 'app-quote-summary',
@@ -20,22 +22,25 @@ export class QuoteSummaryComponent {
   private store = inject(Store);
   private fb    = inject(FormBuilder);
 
-  subtotal$     = this.store.select(selectQuoteSubtotal);
-  tax$          = this.store.select(selectQuoteTax);
-  total$        = this.store.select(selectQuoteTotal);
-  taxRate$      = this.store.select(selectQuoteTaxRate);
-  currency$     = this.store.select(selectQuoteCurrency);
-  isGenerating$ = this.store.select(selectIsGenerating);
-  hasItems$     = this.store.select(selectHasItems);
+  subtotal$          = this.store.select(selectQuoteSubtotal);
+  tax$               = this.store.select(selectQuoteTax);
+  total$             = this.store.select(selectQuoteTotal);
+  taxRate$           = this.store.select(selectQuoteTaxRate);
+  currency$          = this.store.select(selectQuoteCurrency);
+  isGenerating$      = this.store.select(selectIsGenerating);
+  hasItems$          = this.store.select(selectHasItems);
+  history$           = this.store.select(selectQuoteHistory);
+  isLoadingHistory$  = this.store.select(selectIsLoadingHistory);
 
+  historyOpen = signal(false);
   notesControl = this.fb.control('');
 
   constructor() {
     this.store.select(selectQuoteNotes).subscribe(n =>
-      this.notesControl.setValue(n, { emitEvent: false })
+      this.notesControl.setValue(n, { emitEvent: false }),
     );
     this.notesControl.valueChanges.pipe(debounceTime(400), distinctUntilChanged()).subscribe(notes =>
-      this.store.dispatch(QuoteActions.updateNotes({ notes: notes ?? '' }))
+      this.store.dispatch(QuoteActions.updateNotes({ notes: notes ?? '' })),
     );
   }
 
@@ -43,9 +48,31 @@ export class QuoteSummaryComponent {
     this.store.dispatch(QuoteActions.generatePdf());
   }
 
+  openHistory(): void {
+    this.historyOpen.set(true);
+    this.store.dispatch(QuoteActions.loadHistory());
+  }
+
+  closeHistory(): void {
+    this.historyOpen.set(false);
+  }
+
+  viewQuote(entry: SavedQuoteSummary): void {
+    this.store.dispatch(QuoteActions.viewSavedQuote({ id: entry.id }));
+    this.historyOpen.set(false);
+  }
+
   reset(): void {
     if (confirm('Reset the quote? All data will be lost.')) {
+      this.store.dispatch(QuoteActions.clearHistoryView());
       this.store.dispatch(QuoteActions.resetQuote());
     }
+  }
+
+  formatDate(iso: string): string {
+    return new Date(iso).toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
   }
 }

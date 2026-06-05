@@ -11,30 +11,28 @@
       <h3 class="font-bold text-gray-900 dark:text-white">Summary</h3>
     </div>
 
-    @if (currency$ | async; as cur) {
-      <div class="space-y-2">
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-500 dark:text-gray-400">Subtotal</span>
-          <span class="font-mono font-medium text-gray-800 dark:text-gray-200">
-            {{ cur }} {{ (subtotal$ | async) | number:'1.2-2' }}
-          </span>
-        </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-500 dark:text-gray-400">
-            IVA ({{ taxRate$ | async }}%)
-          </span>
-          <span class="font-mono font-medium text-gray-800 dark:text-gray-200">
-            {{ cur }} {{ (tax$ | async) | number:'1.2-2' }}
-          </span>
-        </div>
-        <div class="flex justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
-          <span class="font-bold text-gray-900 dark:text-white">Total</span>
-          <span class="font-mono font-black text-xl text-primary dark:text-accent">
-            {{ cur }} {{ (total$ | async) | number:'1.2-2' }}
-          </span>
-        </div>
+    <div class="space-y-2">
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500 dark:text-gray-400">Subtotal</span>
+        <span class="font-mono font-medium text-gray-800 dark:text-gray-200">
+          {{ currency$ | async }} {{ (subtotal$ | async) | number:'1.2-2' }}
+        </span>
       </div>
-    }
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500 dark:text-gray-400">
+          IVA ({{ taxRate$ | async }}%)
+        </span>
+        <span class="font-mono font-medium text-gray-800 dark:text-gray-200">
+          {{ currency$ | async }} {{ (tax$ | async) | number:'1.2-2' }}
+        </span>
+      </div>
+      <div class="flex justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+        <span class="font-bold text-gray-900 dark:text-white">Total</span>
+        <span class="font-mono font-black text-xl text-primary dark:text-accent">
+          {{ currency$ | async }} {{ (total$ | async) | number:'1.2-2' }}
+        </span>
+      </div>
+    </div>
   </div>
 
   <!-- Notas -->
@@ -72,19 +70,91 @@
       }
     </button>
 
-    <button
-      (click)="reset()"
-      class="w-full flex items-center justify-center gap-2 px-5 py-2.5
-             border border-gray-200 dark:border-gray-700
-             text-gray-500 dark:text-gray-400 text-sm font-medium rounded-xl
-             hover:border-red-300 hover:text-red-500 dark:hover:border-red-800 dark:hover:text-red-400
-             transition-colors duration-200">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-      </svg>
-      New quote
-    </button>
+    <div class="flex gap-2">
+      <button
+        type="button"
+        (click)="openHistory()"
+        class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5
+               border border-gray-200 dark:border-gray-700
+               text-gray-600 dark:text-gray-300 text-sm font-medium rounded-xl
+               hover:border-primary/50 hover:text-primary dark:hover:border-accent/50 dark:hover:text-accent
+               transition-colors duration-200">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        History
+      </button>
+
+      <button
+        type="button"
+        (click)="reset()"
+        class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5
+               border border-gray-200 dark:border-gray-700
+               text-gray-500 dark:text-gray-400 text-sm font-medium rounded-xl
+               hover:border-red-300 hover:text-red-500 dark:hover:border-red-800 dark:hover:text-red-400
+               transition-colors duration-200">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        New quote
+      </button>
+    </div>
   </div>
+
+  <!-- Modal historial -->
+  @if (historyOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+         (click)="closeHistory()">
+      <div class="card w-full max-w-md max-h-[80vh] flex flex-col shadow-xl"
+           (click)="$event.stopPropagation()">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700">
+          <h3 class="font-bold text-gray-900 dark:text-white">Quote history</h3>
+          <button type="button" (click)="closeHistory()"
+                  class="p-1 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto mt-4 space-y-2 min-h-0">
+          @if (isLoadingHistory$ | async) {
+            @for (i of [1,2,3]; track i) {
+              <div class="h-14 rounded-xl bg-gray-100 dark:bg-darkbg-surface animate-pulse"></div>
+            }
+          } @else if ((history$ | async)?.length === 0) {
+            <p class="text-sm text-center text-gray-400 dark:text-gray-500 py-8">
+              No saved quotes yet. Download a PDF to save one.
+            </p>
+          } @else {
+            @for (entry of (history$ | async)!; track entry.id) {
+              <div class="flex items-center justify-between gap-3 p-3 rounded-xl
+                          border border-gray-100 dark:border-gray-700
+                          bg-gray-50 dark:bg-darkbg-surface">
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs text-gray-400 dark:text-gray-500">{{ formatDate(entry.createdAt) }}</p>
+                  <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+                    {{ entry.quoteNumber }}
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    {{ entry.itemCount }} item{{ entry.itemCount !== 1 ? 's' : '' }}
+                    · {{ entry.currency }} {{ entry.total | number:'1.2-2' }}
+                  </p>
+                </div>
+                <button type="button"
+                        (click)="viewQuote(entry)"
+                        class="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold
+                               bg-primary text-white dark:bg-accent
+                               hover:bg-primary-dark dark:hover:bg-accent-dark transition-colors">
+                  Ver
+                </button>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- Badge NgRx -->
   <div class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl

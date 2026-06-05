@@ -15,17 +15,21 @@ import { SavedQuotesModule } from './infrastructure/modules/saved-quotes/saved-q
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host:     config.get('DB_HOST',     'localhost'),
-        port:     config.get<number>('DB_PORT', 5432),
-        username: config.get('DB_USERNAME', 'postgres'),
-        password: config.get('DB_PASSWORD', 'postgres'),
-        database: config.get('DB_NAME',     'portfolio_db'),
-        entities:    [DeviceEntity, SavedQuoteEntity],
-        synchronize: config.get('NODE_ENV') !== 'production',
-        logging:     config.get('NODE_ENV') === 'development',
-      }),
+      useFactory: (config: ConfigService) => {
+        const useSsl = config.get('DB_SSL') === 'true';
+        return {
+          type: 'postgres',
+          host:     config.get('DB_HOST',     'localhost'),
+          port:     config.get<number>('DB_PORT', 5432),
+          username: config.get('DB_USERNAME', 'postgres'),
+          password: config.get('DB_PASSWORD', 'postgres'),
+          database: config.get('DB_NAME',     'portfolio_db'),
+          entities:    [DeviceEntity, SavedQuoteEntity],
+          synchronize: config.get('NODE_ENV') !== 'production',
+          logging:     config.get('NODE_ENV') === 'development',
+          ...(useSsl && { ssl: { rejectUnauthorized: false } }),
+        };
+      },
     }),
     DevicesModule,
     SavedQuotesModule,
