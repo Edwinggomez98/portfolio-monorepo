@@ -4,7 +4,7 @@
   "private": true,
   "description": "Backend NestJS con PostgreSQL y arquitectura hexagonal",
   "scripts": {
-    "build": "nest build",
+    "build": "node ./node_modules/@nestjs/cli/bin/nest.js build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
