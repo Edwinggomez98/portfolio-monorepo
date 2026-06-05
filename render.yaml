@@ -13,3 +13,5 @@ services:
         value: production
       - key: DB_SSL
         value: true
+      - key: CORS_ALLOW_VERCEL
+        value: true
