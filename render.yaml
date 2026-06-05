@@ -1,0 +1,16 @@
+# Render Blueprint — API NestJS
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: portfolio-api
+    runtime: node
+    rootDir: backend
+    # NODE_ENV=production omite devDependencies; @nestjs/cli está ahí
+    buildCommand: npm install --include=dev && npm run build && npm prune --omit=dev
+    startCommand: npm run start:prod
+    healthCheckPath: /api/devices?limit=1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_SSL
+        value: true
