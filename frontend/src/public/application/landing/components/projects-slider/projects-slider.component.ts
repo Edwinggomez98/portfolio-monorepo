@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -6,11 +6,18 @@ export interface Project {
   id: number;
   title: string;
   description: string;
+  details?: string;
   category: string;
   placeholderColor: string;
   tags: string[];
   imageUrl: string;
+  gallery?: string[];
 }
+
+const FINANZAS_IMAGES = Array.from(
+  { length: 8 },
+  (_, i) => `/assets/finanzas (${i + 1}).png`,
+);
 
 @Component({
   selector: 'app-projects-slider',
@@ -20,8 +27,26 @@ export interface Project {
 })
 export class ProjectsSliderComponent {
   currentIndex = signal(0);
+  galleryOpen = signal(false);
+  galleryIndex = signal(0);
 
   readonly projects: Project[] = [
+    {
+      id: 3,
+      title: 'Fintech Platform',
+      description: 'Financial education platform with responsive learning flows and high-performance content delivery.',
+      details:
+        'Key frontend challenges included building a fully responsive experience in Angular 16 (later upgraded to Angular 19), ' +
+        'integrating a fast media player, and shipping modern design and user flows. ' +
+        'The biggest challenge was backend-led: I managed the migration from SQL to MongoDB, where single responses ' +
+        'could exceed 18,000 lines of educational content (chapters, modules, and more). ' +
+        'Through aggregation pipelines and API optimization, response times dropped from ~15s to 2–4s per module.',
+      category: 'Full Stack',
+      placeholderColor: 'from-green-400 to-emerald-600',
+      tags: ['Angular 19', 'MongoDB', 'API Optimization'],
+      imageUrl: FINANZAS_IMAGES[1],
+      gallery: FINANZAS_IMAGES,
+    },
     {
       id: 1,
       title: 'Real Estate Platform',
@@ -39,15 +64,6 @@ export class ProjectsSliderComponent {
       placeholderColor: 'from-purple-400 to-purple-600',
       tags: ['PHP', 'Laravel', 'RabbitMQ', 'Redis'],
       imageUrl: 'https://via.placeholder.com/800x450/8B5CF6/FFFFFF?text=ERP+Middleware',
-    },
-    {
-      id: 3,
-      title: 'Fintech Platform',
-      description: 'Investment portfolio management app with real-time financial data visualization.',
-      category: 'Full Stack',
-      placeholderColor: 'from-green-400 to-emerald-600',
-      tags: ['Vue.js', 'WebSockets', 'Chart.js'],
-      imageUrl: 'https://via.placeholder.com/800x450/10B981/FFFFFF?text=Fintech+Platform',
     },
     {
       id: 4,
@@ -80,6 +96,46 @@ export class ProjectsSliderComponent {
 
   readonly totalProjects = computed(() => this.projects.length);
   readonly currentProject = computed(() => this.projects[this.currentIndex()]);
+  readonly activeGallery = computed(() => this.currentProject().gallery ?? []);
+  readonly currentGalleryImage = computed(() => this.activeGallery()[this.galleryIndex()]);
+
+  isPlaceholder(imageUrl: string): boolean {
+    return imageUrl.includes('placeholder');
+  }
+
+  hasGallery(project: Project): boolean {
+    return (project.gallery?.length ?? 0) > 0;
+  }
+
+  openGallery(startIndex = 0): void {
+    this.galleryIndex.set(startIndex);
+    this.galleryOpen.set(true);
+  }
+
+  closeGallery(): void {
+    this.galleryOpen.set(false);
+  }
+
+  galleryPrev(): void {
+    const total = this.activeGallery().length;
+    this.galleryIndex.update((i) => (i === 0 ? total - 1 : i - 1));
+  }
+
+  galleryNext(): void {
+    const total = this.activeGallery().length;
+    this.galleryIndex.update((i) => (i === total - 1 ? 0 : i + 1));
+  }
+
+  goToGalleryImage(index: number): void {
+    this.galleryIndex.set(index);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.galleryOpen()) {
+      this.closeGallery();
+    }
+  }
 
   prev(): void {
     this.currentIndex.update((i) => (i === 0 ? this.projects.length - 1 : i - 1));
@@ -93,7 +149,7 @@ export class ProjectsSliderComponent {
     this.currentIndex.set(index);
   }
 
-  trackByIndex(_: number, item: Project): number {
-    return item.id;
+  trackByProjectId(_: number, project: Project): number {
+    return project.id;
   }
 }

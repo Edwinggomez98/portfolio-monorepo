@@ -15,7 +15,9 @@ build/
 .env.test.local
 .env.production.local
 *.env
+frontend/src/environments/environment.ts
 frontend/src/environments/environment.prod.ts
+frontend/.env
 
 # Logs
 logs/

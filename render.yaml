@@ -1,11 +1,12 @@
 # Render Blueprint — API NestJS
 # https://render.com/docs/blueprint-spec
+# Configurar en el panel de Render: DATABASE_URL, API_KEY, CORS_ORIGIN
 services:
   - type: web
     name: portfolio-api
     runtime: node
     rootDir: backend
-    buildCommand: NODE_ENV=development npm ci && npm run build
+    buildCommand: npm ci && npm run build
     startCommand: npm run start:prod
     healthCheckPath: /api/devices?limit=1
     envVars:

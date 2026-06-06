@@ -21,11 +21,15 @@ function isVercelPreview(origin: string): boolean {
 
 export function buildCorsOptions(): CorsOptions {
   const allowed = parseAllowedOrigins();
+  const isProd = process.env.NODE_ENV === 'production';
 
   return {
     origin: (origin, callback) => {
-      // Peticiones sin Origin (curl, health checks)
-      if (!origin) return callback(null, true);
+      if (!origin) {
+        // En producción rechazar peticiones sin Origin (curl, scanners).
+        // El health check de Render no envía Origin pero usa @Public() en el guard.
+        return callback(null, !isProd);
+      }
 
       const normalized = normalizeOrigin(origin);
 
@@ -36,5 +40,7 @@ export function buildCorsOptions(): CorsOptions {
       callback(null, false);
     },
     credentials: true,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'X-API-Key'],
   };
 }

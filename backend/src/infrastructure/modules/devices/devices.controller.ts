@@ -3,13 +3,14 @@ import {
   Get,
   Post,
   Query,
-  ParseIntPipe,
-  DefaultValuePipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
+import { Public } from '../../guards/public.decorator';
 import { DevicesService } from './devices.service';
+import { SearchDevicesQueryDto } from './devices.dto';
 
 @ApiTags('devices')
 @Controller('devices')
@@ -17,6 +18,7 @@ export class DevicesController {
   constructor(private readonly svc: DevicesService) {}
 
   @Get()
+  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Buscar dispositivos (full-text + filtros)' })
   @ApiQuery({ name: 'q',      required: false, description: 'Texto libre (marca o modelo)' })
@@ -25,14 +27,8 @@ export class DevicesController {
   @ApiQuery({ name: 'year',   required: false })
   @ApiQuery({ name: 'limit',  required: false, type: Number })
   @ApiQuery({ name: 'offset', required: false, type: Number })
-  async search(
-    @Query('q')      q?: string,
-    @Query('type')   type?: string,
-    @Query('brand')  brand?: string,
-    @Query('year')   year?: string,
-    @Query('limit',  new DefaultValuePipe(50),  ParseIntPipe) limit  = 50,
-    @Query('offset', new DefaultValuePipe(0),   ParseIntPipe) offset = 0,
-  ) {
+  async search(@Query() query: SearchDevicesQueryDto) {
+    const { q, type, brand, year, limit, offset } = query;
     const { data, total } = await this.svc.search({ q, type, brand, year, limit, offset });
     return { data, total, limit, offset };
   }
@@ -52,6 +48,7 @@ export class DevicesController {
   }
 
   @Post('sync')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sincronizar dispositivos desde API externa (dummyjson)' })
   async syncFromExternalApi() {

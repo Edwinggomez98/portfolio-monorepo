@@ -5,10 +5,16 @@ import { SavedQuoteEntity } from './infrastructure/adapters/output/persistence/e
 
 const ENTITIES = [DeviceEntity, SavedQuoteEntity];
 
-const SSL_OPTIONS = { rejectUnauthorized: false } as const;
-
 function isLocalHost(host: string): boolean {
   return host === 'localhost' || host === '127.0.0.1';
+}
+
+function buildSslOptions(isProd: boolean, host?: string) {
+  const isLocal = host ? isLocalHost(host) : false;
+  if (!isProd && isLocal) {
+    return { rejectUnauthorized: false } as const;
+  }
+  return { rejectUnauthorized: true } as const;
 }
 
 function ensureSslMode(url: string): string {
@@ -29,7 +35,7 @@ export function buildTypeOrmConfig(config: ConfigService): TypeOrmModuleOptions 
       entities: ENTITIES,
       synchronize: !isProd,
       logging: !isProd,
-      ssl: SSL_OPTIONS,
+      ssl: buildSslOptions(isProd),
     };
   }
 
@@ -49,6 +55,6 @@ export function buildTypeOrmConfig(config: ConfigService): TypeOrmModuleOptions 
     entities: ENTITIES,
     synchronize: !isProd,
     logging: !isProd,
-    ...(useSsl && { ssl: SSL_OPTIONS }),
+    ...(useSsl && { ssl: buildSslOptions(isProd, host) }),
   };
 }

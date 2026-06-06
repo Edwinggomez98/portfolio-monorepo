@@ -10,6 +10,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { SavedQuotesService } from './saved-quotes.service';
 import { CreateSavedQuoteDto } from './saved-quotes.dto';
 
@@ -19,6 +20,7 @@ export class SavedQuotesController {
   constructor(private readonly svc: SavedQuotesService) {}
 
   @Post()
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Guardar una cotización (sin datos del cliente)' })
   create(@Body() dto: CreateSavedQuoteDto) {

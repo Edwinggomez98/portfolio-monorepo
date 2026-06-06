@@ -98,10 +98,15 @@ export class DevicesService {
   }
 
   private httpsGet(url: string): Promise<string> {
+    const isProd = process.env.NODE_ENV === 'production';
     return new Promise((resolve, reject) => {
       const parsed = new URL(url);
       const req = https.get(
-        { hostname: parsed.hostname, path: parsed.pathname + parsed.search, rejectUnauthorized: false },
+        {
+          hostname: parsed.hostname,
+          path: parsed.pathname + parsed.search,
+          rejectUnauthorized: isProd,
+        },
         (res) => {
           let data = '';
           res.on('data', (chunk: Buffer) => (data += chunk.toString()));

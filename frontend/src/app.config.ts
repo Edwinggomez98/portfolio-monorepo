@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { apiKeyInterceptor } from './shared/interceptors/api-key.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -15,7 +16,7 @@ export const appConfig: ApplicationConfig = {
       routes,
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' })
     ),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([apiKeyInterceptor])),
     provideAnimations(),
     provideStore({ quote: quoteReducer }),
     provideEffects([QuoteEffects]),
