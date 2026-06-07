@@ -45,7 +45,8 @@
                 }
               ],
               "optimization": {
-                "fonts": { "inline": false }
+                "fonts": { "inline": false },
+                "styles": { "inlineCritical": false }
               },
               "budgets": [
                 {
