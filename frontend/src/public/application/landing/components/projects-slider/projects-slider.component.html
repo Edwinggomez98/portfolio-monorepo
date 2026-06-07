@@ -306,12 +306,12 @@
         </button>
       </div>
 
-      <!-- Imagen principal -->
-      <div class="relative flex-1 min-h-0 bg-gray-100 dark:bg-darkbg-surface flex items-center justify-center">
+      <!-- Imagen principal: altura fija para evitar saltos entre capturas -->
+      <div class="relative h-[50vh] min-h-[280px] sm:h-[60vh] sm:min-h-[360px] bg-gray-100 dark:bg-darkbg-surface">
         <img
           [src]="currentGalleryImage()"
           [alt]="currentProject().title + ' screenshot ' + (galleryIndex() + 1)"
-          class="max-w-full max-h-[60vh] object-contain"/>
+          class="absolute inset-0 w-full h-full object-contain p-3 sm:p-4"/>
 
         @if (activeGallery().length > 1) {
           <button type="button" (click)="galleryPrev()"
